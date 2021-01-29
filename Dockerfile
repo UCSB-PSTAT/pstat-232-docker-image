@@ -14,7 +14,6 @@ RUN R -e "dotR <- file.path(Sys.getenv('HOME'), '.R'); \
           if (!file.exists(Makevars)){  file.create(Makevars) }; \
           cat('\nCXX14FLAGS=-O3 -march=native -mtune=native -fPIC', 'CXX14=g++', file = Makevars, sep = '\n', append = TRUE)"
 RUN R -e "install.packages(c('ggplot2','StanHeaders'))"
-#RUN R -e "packageurl <- 'http://cran.r-project.org/src/contrib/Archive/rstan/rstan_2.19.3.tar.gz'; install.packages(packageurl, repos = NULL, type = 'source')"
 RUN R --vanilla -e "packageurl <- 'http://cran.r-project.org/src/contrib/Archive/rstan/rstan_2.21.1.tar.gz'; install.packages(packageurl, repos = NULL, type = 'source')"
 
 #-- ggplot2 extensions
@@ -35,7 +34,6 @@ RUN R --vanilla -e "install.packages('minqa',repos='https://mran.revolutionanaly
 #-- Caret and some ML packages
 #-- ML framework, metrics and Models
 RUN R -e "install.packages(c('codetools'))"
-#RUN R --vanilla -e "install.packages('caret',repos='https://cloud.r-project.org')"
 RUN R --vanilla -e "install.packages('caret',repos='https://mran.revolutionanalytics.com/snapshot/2020-07-16')"
 RUN R -e "install.packages(c('car','ensembleR','MLmetrics','pROC','ROCR','Rtsne','NbClust'))"
 
