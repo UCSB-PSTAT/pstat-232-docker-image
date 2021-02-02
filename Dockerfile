@@ -8,11 +8,8 @@ USER root
 #-- install rstan reqs
 RUN R -e "install.packages(c('inline','gridExtra','loo'))"
 #-- install rstan
-RUN R -e "dotR <- file.path(Sys.getenv('HOME'), '.R'); \
-          if(!file.exists(dotR)){ dir.create(dotR) }; \
-          Makevars <- file.path(dotR, 'Makevars'); \
-          if (!file.exists(Makevars)){  file.create(Makevars) }; \
-          cat('\nCXX14FLAGS=-O3 -march=native -mtune=native -fPIC', 'CXX14=g++', file = Makevars, sep = '\n', append = TRUE)"
+RUN sed -i 's/CXX14 = /CXX14 = g++/I' $R_HOME/etc/Makeconf && \
+    sed -i 's/CXX14FLAGS = /CXX14FLAGS = -O3 -fPIC -Wno-unused-variable -Wno-unused-function/I' $R_HOME/etc/Makeconf
 RUN R -e "install.packages(c('ggplot2','StanHeaders'))"
 RUN R --vanilla -e "packageurl <- 'http://cran.r-project.org/src/contrib/Archive/rstan/rstan_2.21.1.tar.gz'; install.packages(packageurl, repos = NULL, type = 'source')"
 
@@ -28,7 +25,6 @@ RUN R -e "install.packages(c('RPushbullet','styler','plotmo'))"
 
 RUN R -e "install.packages(c('nloptr'))"
 
-#RUN R --vanilla -e "install.packages('minqa',repos='https://cloud.r-project.org', dependencies=TRUE)"
 RUN R --vanilla -e "install.packages('minqa',repos='https://mran.revolutionanalytics.com/snapshot/2020-07-16', dependencies=TRUE)"
 
 #-- Caret and some ML packages
@@ -65,9 +61,6 @@ RUN R -e "install.packages(c('Cairo'))"
 RUN apt-get update && apt-get install -y \
     nano && \
     apt-get clean && rm -rf /var/lib/lists/*
-
-#Fix permissions on $NB_USER
-RUN chown -R $NB_USER:users ~/.R
 
 USER $NB_USER
 
